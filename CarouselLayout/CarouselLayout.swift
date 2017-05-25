@@ -66,10 +66,10 @@ class CarouselLayout: UICollectionViewLayout {
     }
     
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        print(rect)
         var result: [UICollectionViewLayoutAttributes] = []
         for attributes in _attributes {
             if attributes.value.frame.intersects(rect) {
+                translate(attributes: attributes.value)
                 result.append(attributes.value)
             }
         }
@@ -78,7 +78,7 @@ class CarouselLayout: UICollectionViewLayout {
     
     override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         let attributes = _attributes[indexPath]
-        print(attributes)
+        translate(attributes: attributes!)
         return attributes
     }
     
@@ -105,5 +105,29 @@ class CarouselLayout: UICollectionViewLayout {
     
     // interpolation
     
-    fileprivate func 
+    fileprivate func translate(attributes: UICollectionViewLayoutAttributes) {
+        guard let collectionView = self.collectionView else {
+            return
+        }
+        
+//        let cellSize = cellSize(for: collectionView);
+        
+        let offset = (collectionView.contentOffset.x + collectionView.bounds.size.width / 2)
+        
+        let position = (offset - attributes.center.x) / collectionView.bounds.size.width;
+        
+//        let scale = 0.2 + (1.0 - 0.2) / fabs(position)
+        let scale = 1.0 - 0.1 * abs(position)
+        
+        let height = attributes.frame.size.height;
+        
+        attributes.transform = CGAffineTransform.identity
+            .scaledBy(x: scale, y: scale)
+            .translatedBy(x: 60 * position, y: 0.0)
+        
+//        attributes.transform = attributes.transform.scaledBy(x: scale, y: scale)
+//        attributes.transform = attributes.transform.translatedBy(x: 60 * position, y: 0.0);
+        
+        print("\(attributes.indexPath): frame:\(attributes.frame) scale*height=\(scale)*\(height)=\(scale * height)")
+    }
 }
