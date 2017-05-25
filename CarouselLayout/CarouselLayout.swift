@@ -61,7 +61,12 @@ class CarouselLayout: UICollectionViewLayout {
         }
     }
     
+    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+        return true
+    }
+    
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        print(rect)
         var result: [UICollectionViewLayoutAttributes] = []
         for attributes in _attributes {
             if attributes.value.frame.intersects(rect) {
@@ -72,7 +77,9 @@ class CarouselLayout: UICollectionViewLayout {
     }
     
     override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-        return _attributes[indexPath];
+        let attributes = _attributes[indexPath]
+        print(attributes)
+        return attributes
     }
     
     func cellSize(for collectionView: UICollectionView?) -> CGSize {
@@ -95,4 +102,8 @@ class CarouselLayout: UICollectionViewLayout {
         }
         return result
     }
+    
+    // interpolation
+    
+    fileprivate func 
 }
